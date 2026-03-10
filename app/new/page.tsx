@@ -109,20 +109,24 @@ export default function NewPostPage() {
           </div>
         )}
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Caption</label>
-          <textarea value={caption} onChange={e => setCaption(e.target.value)} rows={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none resize-none"
-            placeholder="Escribe el caption de tu post..." maxLength={2200} />
-          <p className="text-xs text-gray-400 text-right">{caption.length}/2200</p>
-        </div>
+        {postType === 'feed' && (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Caption</label>
+              <textarea value={caption} onChange={e => setCaption(e.target.value)} rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none resize-none"
+                placeholder="Escribe el caption de tu post..." maxLength={2200} />
+              <p className="text-xs text-gray-400 text-right">{caption.length}/2200</p>
+            </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Hashtags</label>
-          <input value={hashtags} onChange={e => setHashtags(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
-            placeholder="#instagram #marketing #socialmedia" />
-        </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Hashtags</label>
+              <input value={hashtags} onChange={e => setHashtags(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                placeholder="#instagram #marketing #socialmedia" />
+            </div>
+          </>
+        )}
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Cuenta</label>
