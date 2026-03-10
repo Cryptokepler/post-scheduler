@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://187.77.193.15:3200';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://srv1378488.hstgr.cloud/scheduler-api';
 
 export interface Post {
   id: number;
