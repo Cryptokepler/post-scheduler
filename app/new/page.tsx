@@ -12,6 +12,7 @@ export default function NewPostPage() {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [accountId, setAccountId] = useState('usdtcapital');
+  const [postType, setPostType] = useState<'feed' | 'story'>('feed');
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -21,7 +22,8 @@ export default function NewPostPage() {
   useEffect(() => { api.getAccounts().then(setAccounts).catch(console.error); }, []);
 
   const handleFiles = (newFiles: FileList | File[]) => {
-    const arr = Array.from(newFiles).filter(f => f.type.startsWith('image/'));
+    let arr = Array.from(newFiles).filter(f => f.type.startsWith('image/'));
+    if (postType === 'story') { arr = [arr[0]]; setFiles([]); setPreviews([]); }
     setFiles(prev => [...prev, ...arr]);
     arr.forEach(f => {
       const reader = new FileReader();
@@ -53,6 +55,7 @@ export default function NewPostPage() {
       formData.append('caption', caption);
       formData.append('hashtags', hashtags);
       formData.append('accountId', accountId);
+      formData.append('postType', postType);
       if (!publishNow && date && time) formData.append('scheduledAt', new Date(`${date}T${time}`).toISOString());
       const post = await api.createPost(formData);
       if (publishNow) await api.publishNow(post.id);
@@ -66,7 +69,19 @@ export default function NewPostPage() {
     <AppLayout>
       <div className="max-w-3xl">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Nuevo Post</h1>
-        <p className="text-gray-500 mb-8">Crea y programa un nuevo post de Instagram</p>
+        <p className="text-gray-500 mb-6">Crea y programa un nuevo post de Instagram</p>
+
+        {/* Post Type Toggle */}
+        <div className="flex items-center gap-2 bg-gray-100 rounded-xl p-1 mb-6 w-fit">
+          <button onClick={() => setPostType('feed')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${postType === 'feed' ? 'bg-white shadow text-orange-600' : 'text-gray-500 hover:text-gray-700'}`}>
+            📸 Feed
+          </button>
+          <button onClick={() => { setPostType('story'); if (files.length > 1) { setFiles([files[0]]); setPreviews([previews[0]]); } }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${postType === 'story' ? 'bg-white shadow text-orange-600' : 'text-gray-500 hover:text-gray-700'}`}>
+            📱 Story
+          </button>
+        </div>
 
         <div className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors mb-6 ${dragOver ? 'border-orange-500 bg-orange-50' : 'border-gray-300 hover:border-orange-400'}`}
           onDragOver={e => { e.preventDefault(); setDragOver(true); }}
@@ -76,7 +91,7 @@ export default function NewPostPage() {
           <input ref={fileRef} type="file" multiple accept="image/*" className="hidden" onChange={e => e.target.files && handleFiles(e.target.files)} />
           <div className="text-4xl mb-2">🖼️</div>
           <p className="text-gray-600 font-medium">Arrastra imágenes aquí o haz clic para seleccionar</p>
-          <p className="text-sm text-gray-400 mt-1">Múltiples imágenes para carrusel</p>
+          <p className="text-sm text-gray-400 mt-1">{postType === 'feed' ? 'Múltiples imágenes para carrusel' : 'Una imagen para tu Story (9:16 recomendado)'}</p>
         </div>
 
         {previews.length > 0 && (
